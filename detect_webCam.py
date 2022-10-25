@@ -1,6 +1,7 @@
 import cv2
 import os
 import numpy as np
+import smtplib
 
 labelsPath = 'obj.names'
 LABELS = open(labelsPath).read().strip().split("\n")
@@ -57,6 +58,14 @@ while True:
 				color = [int(c) for c in COLORS[classIDs[i]]]
 				cv2.rectangle(image, (x, y), (x + w-100, y + h-100), color, 2)
 				print("Predicted ->  :  ",LABELS[classIDs[i]])
+
+				if LABELS[classIDs[i]]=="weed":
+					conn=smtplib.SMTP('smtp.gmail.com',587)
+					conn.ehlo()
+					conn.starttls()
+					conn.login('iot.miola1@gmail.com','gtqrnvsojqyykcin')
+					conn.sendmail('iot.miola1@gmail.com','o.elyazyd@gmail.com','Subject:We have detect a weed in your farm')
+
 				text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
 				cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX,0.8, color, 2)
 				det = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
